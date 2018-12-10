@@ -10,7 +10,7 @@ import os
 conn = sqlite3.connect('medicine_database.db')
 cur = conn.cursor()
 cur.execute(
-    "CREATE TABLE IF NOT EXISTS medicine(type TEXT NOT NULL, trade_name TEXT NOT NULL, company TEXT NOT NULL, power INTEGER NOT NULL)")
+    "CREATE TABLE IF NOT EXISTS medicine(type TEXT NOT NULL, trade_name TEXT NOT NULL PRIMARY KEY, company TEXT NOT NULL, power INTEGER NOT NULL)")
 boxHeaders = ['Type', 'Trade Name', 'Company', 'Power']
 items_list = []
 
@@ -50,7 +50,7 @@ def runfunc(master):
         heading.place(x=10, y=30)
 
         # Log
-        headingR = Label(right, text="Log", font='Ubuntu 20 bold', bg="orange", fg=bgLight)
+        headingR = Label(right, text="Medicine", font='Ubuntu 20 bold', bg="orange", fg=bgLight)
         headingR.place(x=30, y=0)
 
         type = Label(left, text="Type:", font=(itemFont), bg=bgLight, fg='white')
@@ -72,6 +72,47 @@ def runfunc(master):
         power.place(x=15, y=220)
         power_entry = Entry(left, width=30)
         power_entry.place(x=250, y=225)
+
+        def deleter_panel():
+            #Remove left panel
+            left.pack_forget()
+
+            #Add leftupdater to screen
+            leftUpdater.pack(side = LEFT)
+            headingUpd = Label(leftUpdater, text="Delete", font='Ubuntu 20 bold', bg=bgLight, fg='white')
+            headingUpd.place(x=10, y=30)
+
+            findName = Label(leftUpdater, text="Enter trade name to delete:", font=(itemFont), bg=bgLight, fg='white')
+            findName.place(x=15, y=100)
+            findName_entry = Entry(leftUpdater, width=30)
+            findName_entry.place(x=250, y=105)
+
+            def delete():
+                findNameVal = findName_entry.get().strip()
+                if(findNameVal == ""):
+                    tkinter.messagebox.showerror("Warning", "Please enter a name")
+                else:
+                    cur.execute("SELECT * FROM medicine WHERE trade_name = ?", (findNameVal,))
+                    data = cur.fetchall()
+                    if not data:
+                        tkinter.messagebox.showerror("Error", "No such trade name found")
+                    else:
+                        result = tkinter.messagebox.askquestion("Confirmation", "Are you sure you want to delete ?")
+                        if result == 'yes':
+                            cur.execute("DELETE FROM medicine WHERE trade_name = ?", (findNameVal,))
+                            conn.commit()
+                            dbtobox()
+                            tkinter.messagebox.showinfo("Information", "Entry was deleted sucessfully.")
+
+            #Back to entry panel
+            def goback():
+                leftUpdater.pack_forget()
+                left.pack(side=LEFT)
+
+            backButton = Button(leftUpdater, text="Go back", width=10, height=1, bg="orange", command=goback)
+            backButton.place(x=415, y=40)
+            searchButton = Button(leftUpdater, text = "Search", width = 5, height = 1, bg = "orange", command = delete)
+            searchButton.place(x=450, y=102)
 
         #--------------------------
         container = ttk.Frame(right)
@@ -162,6 +203,8 @@ def runfunc(master):
         clearButton = Button(left, text = "Clear", width = 5, height = 1, bg = "orange", command = clearentries)
         submitButton.place (x=315, y=400)
         clearButton.place (x=265, y=400)
+        deleteButton = Button(left, text="Delete", width = 10, height= 2, bg = "orange", command = deleter_panel)
+        deleteButton.place(x=290, y=450)
 
 class initUI:
     def __init__(self, master):

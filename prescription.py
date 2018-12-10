@@ -15,6 +15,17 @@ patient_list = []
 for row in cur.fetchall():
     patient_list.append(row)
 
+connM = sqlite3.connect('medicine_database.db')
+curM = connM.cursor()
+curM.execute("SELECT distinct type from medicine")
+type_list = []
+for row in curM.fetchall():
+    type_list.append(row)
+
+#dropdown pos x and y
+ddPosX = 40
+ddPosY = 180
+
 def runfunc(master):
         #Colors and font
         itemFont = "calibri 14 bold"
@@ -26,7 +37,7 @@ def runfunc(master):
         canvas.pack()
 
         #Left panel
-        left = Frame(master, width = 807, height = 664, bg = bgLight)
+        left = Frame(master, width = 857, height = 664, bg = bgLight)
         left.pack(side = LEFT)
 
         title = Label(text="☇Prescription Writer", font='Ubuntu 26 bold', bg="orange", fg='white')
@@ -45,6 +56,44 @@ def runfunc(master):
         problemTextLabel = Label(text="", font='Ubuntu 16', bg="orange", fg="white")
         problemTextLabel.place(x=120, y=201)
         patientName.place(x=10, y=150)
+
+        def printer():
+            pass
+
+        def dropDownAdder():
+            global ddPosY
+
+            tkvar = StringVar(master)
+            tkvar.set('Pick type..')  # set the default option
+            popupMenu = OptionMenu(left, tkvar, *type_list)
+            popupMenu.place(x=ddPosX, y=ddPosY)
+
+
+            def change_dd(*args):
+                getName = tkvar.get()
+                getName = getName.replace("'", "")
+                getName = getName.replace(",", "")
+                getName = getName.replace("(", "")
+                getName = getName.replace(")", "")
+
+                curM.execute("SELECT trade_name from medicine where type = ?", (getName,))
+                medicine_list = []
+                for row in curM.fetchall():
+                    medicine_list.append(row)
+
+                tkvar2 = StringVar(master)
+                tkvar2.set('Pick medicine..')
+                popupMenu2 = OptionMenu(left, tkvar2, *medicine_list)
+                popupMenu2.place(x=ddPosX+140, y=ddPosY-40)
+
+
+
+            tkvar.trace('w', change_dd)
+
+            ddPosY = 40 + ddPosY
+
+            printButton = Button(left, text="Print", width=10, height=2, bg="orange", command=printer)
+            printButton.place(x=720, y=500)
 
         def change_dropdown(*args):
 
@@ -65,6 +114,8 @@ def runfunc(master):
             problemTextLabel.configure(text=actualProblem)
             problemTextLabel.update()
 
+            adderButton = Button(left, text="+", width=1, height=1, bg="orange", command=dropDownAdder)
+            adderButton.place(x=720, y=180)
 
             problemLabel.place(x=10, y=200)
 
