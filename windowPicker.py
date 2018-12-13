@@ -27,8 +27,8 @@ def runfunc(master):
         patientLabel = Label(text="Manage\nPatients", font='Ubuntu 18 bold', bg=bgLight, fg='white')
         patientLabel.place(x=340, y=400)
 
-        prescLabel = Label(text="Manage\nPatients", font='Ubuntu 18 bold', bg=bgLight, fg='white')
-        prescLabel.place(x=580, y=400)
+        prescLabel = Label(text="Manage\nPrescriptions", font='Ubuntu 18 bold', bg=bgLight, fg='white')
+        prescLabel.place(x=550, y=400)
 
 
         def goBack():

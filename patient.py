@@ -288,10 +288,8 @@ def runfunc(master):
 
         submitButton = Button(left, text = "Add Entry", width = 10, height = 1, bg = "orange", command = submit)
         clearButton = Button(left, text = "Clear", width = 5, height = 1, bg = "orange", command = clearentries)
-        #updateButton = Button(left, text="Update", width = 10, height= 2, bg = "orange", command = updater_panel)
         submitButton.place (x=315, y=400)
         clearButton.place (x=265, y=400)
-        #updateButton.place(x=290, y=450)
 
 class presc:
     def __init__(self, master):
