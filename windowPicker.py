@@ -12,17 +12,23 @@ def runfunc(master):
         label.pack()
 
         #canvas test
-        canvas = Canvas(master, width=1280, height=20, bg = "#340012", highlightthickness=0)
-        canvas.pack()
+        #canvas = Canvas(master, width=1280, height=20, bg = "#340012", highlightthickness=0)
+        #canvas.pack()
 
-        left = Frame(master, width = 807, height = 664, bg = bgLight)
+        left = Frame(master, width=807, height=64, bg = bgLight)
         left.pack()
 
-        title = Label(text="Start", font='Ubuntu 26 bold', bg=bgLight, fg='white')
-        title.place(x=110, y=230)
+        bottomFrame = Frame(master, width=807, height=644, bg = bgLight)
+        bottomFrame.place(x=0, y=200)
 
-        iAmA = Label(text="Manage", font='Ubuntu 20 bold', bg=bgLight, fg='white')
-        iAmA.place(x=100, y=350)
+        medLabel = Label(text="Manage\nMedicine", font='Ubuntu 18 bold', bg=bgLight, fg='white')
+        medLabel.place(x=80, y=400)
+
+        patientLabel = Label(text="Manage\nPatients", font='Ubuntu 18 bold', bg=bgLight, fg='white')
+        patientLabel.place(x=340, y=400)
+
+        prescLabel = Label(text="Manage\nPatients", font='Ubuntu 18 bold', bg=bgLight, fg='white')
+        prescLabel.place(x=580, y=400)
 
 
         def goBack():
@@ -42,14 +48,23 @@ def runfunc(master):
         arrow = Button(master, text="Log out", width = 0, height=0, bg='white', command=goBack)
         arrow.place(x=0, y=0)
 
-        userButton = Button(left, text="Medicine", width=10, height=1, bg="white", command=medicinePanel)
-        userButton.place(x=60, y=220)
+        medButton = Button(bottomFrame, bg=bgLight, bd=0, command=medicinePanel)
+        medButton.place(x=90, y=50)
+        medImage= PhotoImage(file = 'medicine.png')
+        medButton.config(image=medImage, compound=RIGHT)
+        medButton.image = medImage
 
-        adminButton = Button(left, text="Patients", width=10, height=1, bg="white", command=patientPanel)
-        adminButton.place(x=180, y=220)
+        patientButton = Button(bottomFrame, bg=bgLight, bd=0, command=patientPanel)
+        patientButton.place(x=330, y=50)
+        patientImage= PhotoImage(file = 'patient.png')
+        patientButton.config(image=patientImage, compound=RIGHT)
+        patientButton.image = patientImage
 
-        prescButton = Button(left, text="Prescriptions", width=10, height=1, bg="white", command=prescriptionPanel)
-        prescButton.place(x=120, y=280)
+        prescriptionButton = Button(bottomFrame, bg=bgLight, bd=0, command=prescriptionPanel)
+        prescriptionButton.place(x=580, y=50)
+        prescriptionImage= PhotoImage(file = 'prescription.png')
+        prescriptionButton.config(image=prescriptionImage, compound=RIGHT)
+        prescriptionButton.image = prescriptionImage
 
 class initUI:
     def __init__(self, master):

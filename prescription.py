@@ -86,6 +86,11 @@ def runfunc(master):
                 popupMenu2 = OptionMenu(left, tkvar2, *medicine_list)
                 popupMenu2.place(x=ddPosX+140, y=ddPosY-40)
 
+                tkvar3 = StringVar(master)
+                tkvar3.set('Pick dosage..')
+                popupMenu3 = OptionMenu(left, tkvar3, "Once at morning", "Once at night", "Twice per day", "3 times per day")
+                popupMenu3.place(x=ddPosX+300, y=ddPosY-40)
+
 
 
             tkvar.trace('w', change_dd)
@@ -124,6 +129,9 @@ def runfunc(master):
         def returnToPicker():
             master.destroy()
             os.system('python windowPickerStarter.py')
+
+        returnButton = Button(canvas, text="Return", width=10, height=1, bg="white", command=returnToPicker)
+        returnButton.place(x=720, y=10)
 
 class initUI:
     def __init__(self, master):

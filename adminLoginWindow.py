@@ -6,7 +6,7 @@ admin = Tk()
 x = adminLogin.initUI(admin)
 
 #config root (main) window
-admin.geometry("320x580")
+admin.geometry("320x580+500+300")
 admin.configure(background='#340012')
 admin.resizable(False, False)
 admin.wm_title("Login screen")
