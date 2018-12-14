@@ -23,11 +23,11 @@ def listPopulator():
 def runfunc(master):
         #Colors and font
         itemFont = "calibri 14 bold"
-        bgLight = '#f44242'
-        bgDark = '#b72d2d'
+        bgLight = '#353540'
+        bgDark = '#202525'
 
         #canvas test
-        canvas = Canvas(master, width=1280, height=50, bg = "orange", highlightthickness=0)
+        canvas = Canvas(master, width=1280, height=50, bg = bgLight, highlightthickness=0)
         canvas.pack()
 
         #Left panel
@@ -42,7 +42,7 @@ def runfunc(master):
         right.place(x=520, y=77)
         #right.pack()
         # Title
-        title = Label(text="☇Medicine Database", font='Ubuntu 26 bold', bg="orange", fg='white')
+        title = Label(text="☇Medicine Database", font='Ubuntu 26 bold', bg=bgLight, fg='white')
         title.place(x=0, y=0)
 
         # Add to log
@@ -50,7 +50,7 @@ def runfunc(master):
         heading.place(x=10, y=30)
 
         # Log
-        headingR = Label(right, text="Medicine", font='Ubuntu 20 bold', bg="orange", fg=bgLight)
+        headingR = Label(right, text="Medicine", font='Ubuntu 20 bold', bg=bgLight, fg="white")
         headingR.place(x=30, y=0)
 
         type = Label(left, text="Type:", font=(itemFont), bg=bgLight, fg='white')

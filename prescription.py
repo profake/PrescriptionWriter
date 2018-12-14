@@ -5,14 +5,17 @@ import helpers
 import tkinter.ttk as ttk
 import tkinter.font as tkFont
 import string
+import datetime
 import os
-
+now = datetime.datetime.now()
 
 medType = ""
 medName = ""
 dose = ""
 
 # db stuff
+medicine_list = []
+
 conn = sqlite3.connect('patient.db')
 cur = conn.cursor()
 cur.execute("SELECT client_name from log")
@@ -32,20 +35,21 @@ ddPosX = 40
 ddPosY = 180
 
 def runfunc(master):
+
         #Colors and font
         itemFont = "calibri 14 bold"
-        bgLight = '#f44242'
-        bgDark = '#b72d2d'
+        bgLight = '#424242'
+        bgDark = '#2b2b2b'
 
         #canvas test
-        canvas = Canvas(master, width=1280, height=50, bg = "orange", highlightthickness=0)
+        canvas = Canvas(master, width=1280, height=50, bg = "#2b2b2b", highlightthickness=0)
         canvas.pack()
 
         #Left panel
         left = Frame(master, width = 857, height = 664, bg = bgLight)
         left.pack(side = LEFT)
 
-        title = Label(text="☇Prescription Writer", font='Ubuntu 26 bold', bg="orange", fg='white')
+        title = Label(text="☇Prescription Writer", font='Ubuntu 26 bold', bg=bgDark, fg='white')
         title.place(x=0, y=0)
 
         tkvar = StringVar(master)
@@ -111,68 +115,66 @@ def runfunc(master):
             result = tkinter.messagebox.askquestion("Confirmation",
                                                     "Are you sure you want to print prescription?")
             if result == 'yes':
-                pass
-
+                c_name = tkvar.get()[2:-3]
+                currentDate = str(now.day) + '-' + str(now.month) + '-' + str(now.year)
+                cur.execute(
+                    "UPDATE log SET status = ?, last_visit = ? WHERE client_name = ?",
+                    ("Done", currentDate, c_name))
+                conn.commit()
         def adder():
             items_list = []
             items_list.extend([medName, medType, dose])
             dbtobox(items_list)
 
+        tkvar1 = StringVar(master)
+        tkvar1.set('Pick type..')  # set the default option
+        medTypeMenu = OptionMenu(left, tkvar1, *type_list)
+
+        tkvar2 = StringVar(master)
+        tkvar2.set('Pick medicine..')
+
+        tkvar3 = StringVar(master)
+        tkvar3.set('Pick dosage..')
+        dosageMenu = OptionMenu(left, tkvar3, "Once at morning", "Once at night", "Twice per day", "3 times per day")
+
         def dropDownAdder():
             global ddPosY
 
-            tkvar = StringVar(master)
-            tkvar.set('Pick type..')  # set the default option
-            medTypeMenu = OptionMenu(left, tkvar, *type_list)
             medTypeMenu.place(x=ddPosX, y=ddPosY)
 
-
             def change_dd(*args):
+                tkvar2.set("Pick medicine..")
+                tkvar3.set("Pick dosage..")
                 global medType
-                medType = tkvar.get()
-                medType = medType.replace("'", "")
-                medType = medType.replace(",", "")
-                medType = medType.replace("(", "")
-                medType = medType.replace(")", "")
+                global medicine_list
 
-
+                medType = tkvar1.get()[2:-3]
+                print(medType)
                 curM.execute("SELECT trade_name from medicine where type = ?", (medType,))
-                medicine_list = []
+
+                medicine_list.clear()
                 for row in curM.fetchall():
                     medicine_list.append(row)
 
-                tkvar2 = StringVar(master)
-                tkvar2.set('Pick medicine..')
-                popupMenu2 = OptionMenu(left, tkvar2, *medicine_list)
-                popupMenu2.place(x=ddPosX+140, y=ddPosY)
+                medNameMenu = OptionMenu(left, tkvar2, *medicine_list)
+                medNameMenu.place(x=ddPosX+140, y=ddPosY)
 
                 def change_dd2(*args):
                     global medName
-                    medName = tkvar2.get()
-                    medName = medName.replace("'", "")
-                    medName = medName.replace(",", "")
-                    medName = medName.replace("(", "")
-                    medName = medName.replace(")", "")
+                    medName = tkvar2.get()[2:-3]
 
                 tkvar2.trace('w', change_dd2)
 
-                tkvar3 = StringVar(master)
-                tkvar3.set('Pick dosage..')
-                popupMenu3 = OptionMenu(left, tkvar3, "Once at morning", "Once at night", "Twice per day", "3 times per day")
-                popupMenu3.place(x=ddPosX+300, y=ddPosY)
+                dosageMenu.place(x=ddPosX+300, y=ddPosY)
 
                 def change_dd3(*args):
                     global dose
                     dose = tkvar3.get()
-                    dose = dose.replace("'", "")
-                    dose = dose.replace(",", "")
-                    dose = dose.replace("(", "")
-                    dose = dose.replace(")", "")
 
                 tkvar3.trace('w', change_dd3)
 
 
-            tkvar.trace('w', change_dd)
+            tkvar1.trace('w', change_dd)
 
             printButton = Button(left, text="Print", width=10, height=1, bg="orange", command=printer)
             printButton.place(x=720, y=500)
@@ -185,11 +187,7 @@ def runfunc(master):
             for i in tree.get_children():
                 tree.delete(i)
 
-            getName = tkvar.get()
-            getName = getName.replace("'", "")
-            getName = getName.replace(",", "")
-            getName = getName.replace("(", "")
-            getName = getName.replace(")", "")
+            getName = tkvar.get()[2:-3]
 
             #Get problem
             cur.execute("SELECT problem FROM log WHERE client_name = ?", (getName,))

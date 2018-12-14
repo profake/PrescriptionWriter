@@ -1,5 +1,6 @@
 from tkinter import *
 import windowPicker
+from tkinter.ttk import *
 
 #tk main window
 start = Tk()

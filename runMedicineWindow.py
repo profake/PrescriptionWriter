@@ -5,7 +5,7 @@ root = Tk()
 x = medicine.initUI(root)
 
 root.geometry("960x768+500+280")
-root.configure(background = 'orange')
+root.configure(background = '#191919')
 root.resizable(False, False)
 root.wm_title("Medicine Database")
 
