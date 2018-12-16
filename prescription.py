@@ -12,6 +12,7 @@ now = datetime.datetime.now()
 medType = ""
 medName = ""
 dose = ""
+duration = ""
 
 # db stuff
 medicine_list = []
@@ -32,7 +33,7 @@ for row in curM.fetchall():
 
 #dropdown pos x and y
 ddPosX = 40
-ddPosY = 180
+ddPosY = 200
 
 def runfunc(master):
 
@@ -46,7 +47,7 @@ def runfunc(master):
         canvas.pack()
 
         #Left panel
-        left = Frame(master, width = 857, height = 664, bg = bgLight)
+        left = Frame(master, width = 1280, height = 664, bg = bgLight)
         left.pack(side = LEFT)
 
         title = Label(text="☇Prescription Writer", font='Ubuntu 26 bold', bg=bgDark, fg='white')
@@ -66,10 +67,10 @@ def runfunc(master):
         problemTextLabel.place(x=120, y=201)
         patientName.place(x=10, y=150)
 
-        boxHeaders = ['Name', 'Company', 'Dosage']
+        boxHeaders = ['Name', 'Company', 'Dosage', 'Course Duration']
         # --------------------------
         container = ttk.Frame(left)
-        container.place(x=550, y=70)
+        container.place(x=750, y=70)
         tree = ttk.Treeview(columns=boxHeaders, show="headings")
         vsb = ttk.Scrollbar(orient="vertical", command=tree.yview)
         hsb = ttk.Scrollbar(orient="horizontal", command=tree.xview)
@@ -85,7 +86,6 @@ def runfunc(master):
             tree.heading(col, command=lambda col=col: sortby(tree, col, int(not descending)))
 
         def OnDoubleClick(ev):
-            pass
             item = tree.focus()
             tree.delete(item)
 
@@ -100,7 +100,7 @@ def runfunc(master):
             tree.heading(col, text=col,
                          command=lambda c=col: sortby(tree, c, 0))
             # adjust the column's width to the header string
-            tree.column(col, width=90)
+            tree.column(col, width=110)
 
         def dbtobox(items_list):
             tree.insert('', 'end', values=items_list)
@@ -113,7 +113,7 @@ def runfunc(master):
 
         def printer():
             result = tkinter.messagebox.askquestion("Confirmation",
-                                                    "Are you sure you want to print prescription?")
+                                                    "Confirm prescription?")
             if result == 'yes':
                 c_name = tkvar.get()[2:-3]
                 currentDate = str(now.day) + '-' + str(now.month) + '-' + str(now.year)
@@ -121,9 +121,21 @@ def runfunc(master):
                     "UPDATE log SET status = ?, last_visit = ? WHERE client_name = ?",
                     ("Done", currentDate, c_name))
                 conn.commit()
+                tkinter.messagebox.showinfo("Information", "Prescription confirmed for "+tkvar.get()[2:-3]+".")
+
+                prescName = tkvar.get()[2:-3] + " " +str(now.day) + "-"+str(now.month) +"-"+ str(now.year)+".txt"
+                tFile = open(prescName, "w")
+                for line in tree.get_children():
+                    for value in tree.item(line)['values']:
+                        tFile.write(value)
+                        tFile.write(" ")
+                    tFile.write("\n")
+
+                tFile.close()
+
         def adder():
             items_list = []
-            items_list.extend([medName, medType, dose])
+            items_list.extend([medName, medType, dose, duration])
             dbtobox(items_list)
 
         tkvar1 = StringVar(master)
@@ -137,6 +149,10 @@ def runfunc(master):
         tkvar3.set('Pick dosage..')
         dosageMenu = OptionMenu(left, tkvar3, "Once at morning", "Once at night", "Twice per day", "3 times per day")
 
+        tkvar4 = StringVar(master)
+        tkvar4.set('Pick course duration..')
+        durationMenu = OptionMenu(left, tkvar4, "3 days", "7 days", "10 days", "15 days", "One month", "Three months", "Lifetime")
+
         def dropDownAdder():
             global ddPosY
 
@@ -145,11 +161,11 @@ def runfunc(master):
             def change_dd(*args):
                 tkvar2.set("Pick medicine..")
                 tkvar3.set("Pick dosage..")
+                tkvar4.set("Pick course duration..")
                 global medType
                 global medicine_list
 
                 medType = tkvar1.get()[2:-3]
-                print(medType)
                 curM.execute("SELECT trade_name from medicine where type = ?", (medType,))
 
                 medicine_list.clear()
@@ -166,6 +182,7 @@ def runfunc(master):
                 tkvar2.trace('w', change_dd2)
 
                 dosageMenu.place(x=ddPosX+300, y=ddPosY)
+                durationMenu.place(x=ddPosX+450, y=ddPosY)
 
                 def change_dd3(*args):
                     global dose
@@ -173,14 +190,19 @@ def runfunc(master):
 
                 tkvar3.trace('w', change_dd3)
 
+                def change_dd4(*args):
+                    global duration
+                    duration = tkvar4.get()
+
+                tkvar4.trace('w', change_dd4)
 
             tkvar1.trace('w', change_dd)
 
-            printButton = Button(left, text="Print", width=10, height=1, bg="orange", command=printer)
-            printButton.place(x=720, y=500)
+            printButton = Button(left, text="Done", width=10, height=1, bg="orange", command=printer)
+            printButton.place(x=520, y=500)
 
             addButton = Button(left, text="Add", width=10, height=1, bg="orange", command=adder)
-            addButton.place(x=620, y=500)
+            addButton.place(x=420, y=500)
 
         def change_dropdown(*args):
 
@@ -211,7 +233,7 @@ def runfunc(master):
             os.system('python windowPickerStarter.py')
 
         returnButton = Button(canvas, text="Return", width=10, height=1, bg="white", command=returnToPicker)
-        returnButton.place(x=720, y=10)
+        returnButton.place(x=920, y=10)
 
 class initUI:
     def __init__(self, master):

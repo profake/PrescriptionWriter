@@ -10,8 +10,8 @@ import os
 conn = sqlite3.connect('medicine_database.db')
 cur = conn.cursor()
 cur.execute(
-    "CREATE TABLE IF NOT EXISTS medicine(type TEXT NOT NULL, trade_name TEXT NOT NULL PRIMARY KEY, company TEXT NOT NULL, power INTEGER NOT NULL)")
-boxHeaders = ['Type', 'Trade Name', 'Company', 'Power']
+    "CREATE TABLE IF NOT EXISTS medicine(type TEXT NOT NULL, trade_name TEXT NOT NULL PRIMARY KEY, company TEXT NOT NULL)")
+boxHeaders = ['Type', 'Trade Name', 'Company']
 items_list = []
 
 def listPopulator():
@@ -68,10 +68,10 @@ def runfunc(master):
         company_entry = Entry(left, width=30)
         company_entry.place(x=250, y=185)
 
-        power = Label(left, text="Power", font=(itemFont), bg=bgLight, fg='white')
-        power.place(x=15, y=220)
-        power_entry = Entry(left, width=30)
-        power_entry.place(x=250, y=225)
+        #power = Label(left, text="Power", font=(itemFont), bg=bgLight, fg='white')
+        #power.place(x=15, y=220)
+        #power_entry = Entry(left, width=30)
+        #power_entry.place(x=250, y=225)
 
         def deleter_panel():
             #Remove left panel
@@ -168,29 +168,26 @@ def runfunc(master):
             type_entry.delete(0, END)
             name_entry.delete(0, END)
             company_entry.delete(0, END)
-            power_entry.delete(0, END)
+            #power_entry.delete(0, END)
 
         def submit():
             typeVal = type_entry.get().strip()
             nameVal = name_entry.get().strip()
             companyVal = company_entry.get().strip()
-            powerVal = power_entry.get().strip()
+            #powerVal = power_entry.get().strip()
 
-            if typeVal == '' or nameVal == '' or companyVal == '' or powerVal == '':
+            if typeVal == '' or nameVal == '' or companyVal == '':
                 tkinter.messagebox.showerror("Warning", "Please fill up all the entries")
             else:
-                if not helpers.RepresentsInt(powerVal):
-                    tkinter.messagebox.showerror("Warning", "Please enter an integer value as power")
-                else:
-                    try:
-                        cur.execute("INSERT INTO medicine VALUES(?, ?, ?, ?)",
-                                (typeVal, nameVal, companyVal, powerVal+" mg"))
-                        conn.commit()
-                        dbtobox()
-                        tkinter.messagebox.showinfo("Message", "Entry added successfully for " + nameVal + " of brand " + companyVal + " with power "+powerVal)
-                        clearentries()
-                    except sqlite3.IntegrityError as e:
-                        tkinter.messagebox.showerror("Error", "ERROR!")
+                try:
+                    cur.execute("INSERT INTO medicine VALUES(?, ?, ?)",
+                            (typeVal, nameVal, companyVal))
+                    conn.commit()
+                    dbtobox()
+                    tkinter.messagebox.showinfo("Message", "Entry added successfully for " + nameVal + " of brand " + companyVal)
+                    clearentries()
+                except sqlite3.IntegrityError as e:
+                    tkinter.messagebox.showerror("Error", "ERROR!")
 
         def returnToPicker():
             master.destroy()
