@@ -1,5 +1,5 @@
 # PrescriptionWriter
-![alt-text](https://scontent.fzyl1-1.fna.fbcdn.net/v/t1.0-9/48356654_10213041193252578_4974826843333984256_n.jpg?_nc_cat=101&ccb=2&_nc_sid=730e14&_nc_eui2=AeFnOQ08zrX3iwJTEnfiDmx3_Uax4QPmOrv9RrHhA-Y6u-4B_KDULuqzDtjQA5fZgn8&_nc_ohc=leM7I60GxLgAX94ctzy&_nc_oc=AQkLuIjV-ctvpz9PYG8JzEDZMES1GN-OCXGsUQUw6yrsSkPwhLo4dkkR4mRxYhrhU0M&_nc_ht=scontent.fzyl1-1.fna&oh=118dbc86fcf6ac30413db7bb542b65f9&oe=5FC772EF)
+[![Video](https://img.youtube.com/vi/H7idedccRYo/0.jpg)](https://www.youtube.com/watch?v=H7idedccRYo)
 <hr>
 University P200 Project
 <p>Made with Python3, TkInter for the GUI, sqlite3 for the database and PyFPDF for printing to a PDF file.<br>
